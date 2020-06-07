@@ -4,6 +4,7 @@ import pandas as pd
 import time
 from datetime import date
 from datetime import datetime
+import matplotlib.pyplot as plt
 
 BASE_DIR = 'F:\Aprendendo python\Saude'
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname( os.path.abspath(__file__) ) ))
@@ -44,7 +45,30 @@ try:
 except:
     pass
 
-df = pd.read_sql_table("saude", connection)
+df = pd.read_sql_table( "saude", connection,
+                        parse_dates = {
+                        "data": "%Y-%m-%d"
+                        }
+)
 print(df.tail())
+
+df["oximetro"] = df["oximetro"].astype(float)
+df["batimento_cardiaco"] = df["batimento_cardiaco"].astype(float)
+df["temperatura"] = df["temperatura"].astype(float)
+
+plt.subplot(311)
+plt.plot(df["oximetro"])
+plt.axhline(95, color='r', linestyle= ":")
+plt.legend(["Saturação"])
+
+plt.subplot(312)
+plt.plot(df["batimento_cardiaco"])
+plt.legend(["Batimento Cardiaco"])
+
+plt.subplot(313)
+plt.plot(df["temperatura"])
+plt.axhline(37, color='r', linestyle= ":")
+plt.legend(["Temperatura"])
+plt.show()
 
 time.sleep(60)
